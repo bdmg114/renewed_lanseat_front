@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랜선석 예약</title>
+</head>
+
+<body>
+    <style>
+        .seat.occupied {
+            background-color: #ff0000;
+            height: auto;
+            width: auto;
+            padding: 0px 10px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            outline: none;
+
+        }
+    </style>
+    <div class="wrap">
+        <div class="content">
+            <div class="title">
+                <h1>랜선석 대시보드</h1>
+            </div>
+            <div>
+                <div class="lans">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+
+    <script>
+        const token = localStorage.getItem('token');
+
+        // Example function to handle button click
+        function handleCancel(id) {
+            fetch(`http://127.0.0.1:8000/cancel/${id}`, {
+                method: 'POST',  // or 'GET', 'PUT', etc. depending on your endpoint
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ /* your request body if required */ })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    // Handle successful response here if needed
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle error condition here
+                });
+        }
+        fetch(`http://127.0.0.1:8000/dash`, {
+            method: 'GET', // or 'POST', 'PUT', etc.
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        // Handle unauthorized access (e.g., redirect to login page)
+                        window.location.href = 'login.html';  // Replace with your login page URL
+                    } else {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+                for (let key in data) {
+                    if (key === 'result') {
+                        if (!data[key]) {
+                            break;
+                        }
+                    } else {
+                        $('.lans').append(`<h3>${key}</h3>`);
+                        $('.lans').append(`<div class="container ${key}"></div>`);
+
+                        data[key][0].forEach((row, index) => {
+                            $(`.${key}`).append(`<div class="row ${index.toString()}"></div>`);
+                            row.forEach((seat, i) => {
+                                if (seat === '') {
+                                    $(`.${key} .${index.toString()}`).append(`<div class="seat empty"></div>`);
+                                } else if (seat === '-') {
+                                    $(`.${key} .${index.toString()}`).append(`<div class="seat marked"></div>`);
+                                } else {
+                                    const parts = data[key][1][0].toString().split(',');
+                                    console.log(i);
+                                    $(`.${key} .${index.toString()}`).append(`
+    <button class="seat occupied" id="${parts[i]}">${seat}</button>
+`);
+
+                                    // Add event delegation to handle button clicks
+                                    $(`.${key} .${index.toString()}`).on('click', '.seat.occupied', function () {
+                                        const id = $(this).attr('id');
+                                        handleCancel(id); // Call function to handle cancel action
+                                    });
+                                }
+                            });
+                        });
+                    }
+                }
+            });
+
+    </script>
+</body>
+
+</html>

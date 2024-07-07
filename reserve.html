@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>랜선석 예약</title>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="content">
+      <div class="title">
+        <h1>랜선석 예약하기</h1>
+        <p class="profile"></p>
+        <p class="seat_name">분류</p>
+      </div>
+      <div class="error">
+        <ul>
+        </ul>
+      </div>
+      <div>
+        <div class="container">
+        </div>
+        <button class="reserve_button" onclick="submit()">예약하기</button>
+      </div>
+      <div class="items">
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+    integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+
+  <script>
+    var info = JSON.parse(window.localStorage.getItem("UserInfo"));
+    if (info != null) {
+      $('.profile').html(`환영합니다. <strong>${info['Uid']}</strong>`);
+      fetch(`http://127.0.0.1:8000/seat/${info['SeatId']}`).then((response) => {
+        return response.json();
+      }).then((data) => {
+        var index = 0;
+        $('.seat_name').text(data['seat_name'].replace('_', ' ') + ' 랜선석');
+        for (key in data['seat_list']) {
+          $('.container').append(`<div class="row ${index.toString()}"></div>`);
+          var j = 0;
+          data['seat_list'][key].forEach(seat => {
+            if (seat == '') {
+              $(`.${index.toString()}`).append(`<div class="seat empty"></div>`);
+            }
+            else {
+              if (data['reserved'][0][key][j] == '-') {
+                $(`.${index.toString()}`).append(`<div class="seat" id="${seat}"></div>`);
+              }
+              else if (data['reserved'][0][key][j] == info['Uid']) {
+                $(`.${index.toString()}`).append(`<div class="seat mine" id="${seat}"></div>`);
+              }
+              else {
+                $(`.${index.toString()}`).append(`<div class="seat occupied" id="${seat}"></div>`);
+              }
+            }
+            j += 1;
+          });
+          index += 1;
+        }
+      });
+    } //좌석 렌더링
+  </script>
+
+  <script> // 좌석 선택 처리
+    const container = document.querySelector('.container');
+    const seats = document.querySelectorAll('.row .seat:not(.occupied)');
+
+    const mail_field = document.getElementById("email-field");
+    let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+
+    var selected;
+    container.addEventListener('click', e => {
+      if (e.target.classList.contains('seat') &&
+        !e.target.classList.contains('occupied') &&
+        !e.target.classList.contains('empty')) {
+        if (selected != null) {
+          selected.classList.remove('selected');
+        }
+        e.target.classList.toggle('selected');
+        selected = e.target;
+        $(".selected_seat").text(`선택한 좌석:${selected.id}`);
+        console.log(`${$('.seat_name').text().replace(' 랜선석', '').replace(' ', '_')}${selected.id.toString()}`);
+      }
+    });
+    var info = JSON.parse(window.localStorage.getItem("UserInfo"));
+    console.log(info);
+    function submit() {
+      // Clear previous error messages
+      $('.error ul').empty();
+
+      // Retrieve user information from localStorage
+      var info = JSON.parse(window.localStorage.getItem("UserInfo"));
+
+      // Check if info and selected seat are valid
+      if (info != null && selected != null) {
+        // Prepare the fetch request
+        fetch("http://127.0.0.1:8000/reserve", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            seat: `${$('.seat_name').text().replace(' 랜선석', '').replace(' ', '_')}${selected.id.toString()}`,
+            student: info['Uid']
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((result) => {
+            if (!result['result'] && result['error']) {
+              // Display error message if reservation failed
+              $('.error ul').append(`<li>${result['error']}</li>`);
+            } else {
+              // Clear the selected seat and any previous errors on success
+              selected.classList.remove('selected');
+              selected = null;
+              $('.error ul').empty();
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            $('.error ul').append(`<li>예약 요청 중 오류가 발생했습니다.</li>`);
+          });
+      } else {
+        // Display an error if info or selected seat is invalid
+        $('.error ul').append(`<li>정보를 입력하세요</li>`);
+      }
+    }
+  </script>
+</body>
+
+</html>

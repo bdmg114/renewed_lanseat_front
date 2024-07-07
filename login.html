@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - 랜선석 예약</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="style.css"> <!-- Include your custom stylesheet if needed -->
+</head>
+
+<body>
+    <div class="bg-gray-100 min-h-screen flex items-center justify-center">
+        <div class="card p-8 bg-white shadow-lg rounded-lg w-80">
+            <h1 class="text-2xl font-bold mb-6 text-center">로그인</h1>
+            <form id="loginForm" class="space-y-4">
+                <div class="form-group">
+                    <label for="username" class="form-label">사용자 이름:</label>
+                    <input type="text" id="username" name="username" class="input" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">비밀번호:</label>
+                    <input type="password" id="password" name="password" class="input" required>
+                </div>
+                <div class="form-group">
+                    <button type="button" onclick="login()" class="btn btn-primary w-full">로그인</button>
+                </div>
+                <div id="error-message" class="text-red-500 text-sm"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+    <script>
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/token/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                localStorage.setItem('token', data.access);
+                window.location.href = 'dashboard.html'; // Redirect to dashboard or desired page
+            } catch (error) {
+                document.getElementById('error-message').textContent = 'Invalid username or password.';
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>

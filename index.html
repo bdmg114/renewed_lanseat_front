@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랜선석 예약</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="content">
+            <div class="title">
+                <h1>랜선석 예약하기</h1>
+            </div>
+            <a href="google.com">
+                <div id="scroll-container">
+                    <div id="scroll-text">여기에 들어갈 문구를 신청하세요!</div>
+                </div>
+            </a>
+
+            <div class="form">
+                <span>ID</span>
+                <input type="text" id="Uid">
+                <select name="" id="SeatSel" class="seatlist">
+
+                </select>
+                <button onclick="goto_reserve()">예약하러가기</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+
+    <script>
+        const Uid_field = document.getElementById("Uid");
+        const Seat_select = document.getElementById("SeatSel");
+        fetch("http://127.0.0.1:8000/seat_list").then((response) => {
+            return response.json();
+        }).then((data) => {
+            for (seat in data) {
+                $('.seatlist').append(`<option value="${data[seat]}">${data[seat].replace('_', ' ')}</option>`);
+            }
+        }).then(() => {
+            var info = JSON.parse(window.localStorage.getItem("UserInfo"));
+            if (info != null) {
+                console.log(info['SeatId']);
+                Uid_field.value = info['Uid'];
+                Seat_select.selectedIndex = Number(info['SeatId']);
+                console.log(Seat_select.selectedIndex);
+            }
+        }
+        );
+
+        function goto_reserve() {
+            let Uinfo = {
+                "Uid": Uid_field.value,
+                "SeatId": Seat_select.selectedIndex
+            };
+            window.localStorage.setItem('UserInfo', JSON.stringify(Uinfo));
+            console.log(`${Seat_select.options[Seat_select.selectedIndex].text} ${Uid_field.value}`);
+            window.location.href = 'reserve.html';
+        }
+    </script>
+</body>
+
+</html>
