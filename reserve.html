@@ -39,7 +39,7 @@
     var info = JSON.parse(window.localStorage.getItem("UserInfo"));
     if (info != null) {
       $('.profile').html(`환영합니다. <strong>${info['Uid']}</strong>`);
-      fetch(`http://127.0.0.1:8000/seat/${info['SeatId']}`).then((response) => {
+      fetch(`http://gghs2023.cafe24.com/seat/${info['SeatId']}`).then((response) => {
         return response.json();
       }).then((data) => {
         var index = 0;
@@ -103,7 +103,7 @@
       // Check if info and selected seat are valid
       if (info != null && selected != null) {
         // Prepare the fetch request
-        fetch("http://127.0.0.1:8000/reserve", {
+        fetch("http://gghs2023.cafe24.com/reserve", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

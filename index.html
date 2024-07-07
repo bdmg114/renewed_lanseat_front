@@ -37,7 +37,7 @@
     <script>
         const Uid_field = document.getElementById("Uid");
         const Seat_select = document.getElementById("SeatSel");
-        fetch("http://127.0.0.1:8000/seat_list").then((response) => {
+        fetch("http://gghs2023.cafe24.com/seat_list").then((response) => {
             return response.json();
         }).then((data) => {
             for (seat in data) {
