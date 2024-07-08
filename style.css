@@ -1,26 +1,27 @@
 div {
-    margin: 5px;
+  margin: 5px;
 }
 
 .wrap {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .content {
-    width: 100%;
-    max-width: 500px;
+  width: 100%;
+  max-width: 500px;
 }
 
 .title {
-    margin-top: 30px; 
-    display: flex;
-    margin: 30px auto;
-    width: 100%;
-    justify-content: center;
+  margin-top: 30px;
+  display: flex;
+  margin: 30px auto;
+  width: 100%;
+  justify-content: center;
 }
 
-.title h1,p{
+.title h1,
+p {
   text-align: center;
 }
 
@@ -29,11 +30,11 @@ div {
 }
 
 .container {
-    display: block;
-    overflow: auto;
-    align-content: center;
-    width: 90%;
-    margin-bottom: 30px;
+  display: block;
+  overflow: auto;
+  align-content: center;
+  width: 90%;
+  margin-bottom: 30px;
 }
 
 .title {
@@ -45,28 +46,28 @@ div {
   border-radius: 10px;
 }
 
-.error ul{
+.error ul {
   margin: 0;
 }
 
-.error li{
+.error li {
   color: #ff0000;
   padding: 10px;
 }
 
 .row {
-    display: flex;
-    width: max-content;
-    margin: 0 auto;
+  display: flex;
+  width: max-content;
+  margin: 0 auto;
 }
 
 .seat {
-    background-color: #b1b0ff;
-    height: 4vh;
-    width: 4vh;
-    margin: 3px;
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
+  background-color: #b1b0ff;
+  height: 4vh;
+  width: 4vh;
+  margin: 3px;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
 }
 
 .seat.occupied {
@@ -82,56 +83,16 @@ div {
 }
 
 .seat.empty {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .seat:not(.occupied):hover {
-    cursor: pointer;
-    transform: scale(1.2);
+  cursor: pointer;
+  transform: scale(1.2);
 }
 
 .showcase .seat:not(.occupied):hover {
-    cursor: default;
-    transform: scale(1);
+  cursor: default;
+  transform: scale(1);
 }
-#scroll-container {
-    border: 3px solid black;
-    border-radius: 5px;
-    overflow: hidden;
-  }
-  
-  #scroll-text {
-    /* animation properties */
-    -moz-transform: translateX(100%);
-    -webkit-transform: translateX(100%);
-    transform: translateX(100%);
-    
-    -moz-animation: my-animation 15s linear infinite;
-    -webkit-animation: my-animation 15s linear infinite;
-    animation: my-animation 15s linear infinite;
-  }
-  
-  /* for Firefox */
-  @-moz-keyframes my-animation {
-    from { -moz-transform: translateX(100%); }
-    to { -moz-transform: translateX(-100%); }
-  }
-  
-  /* for Chrome */
-  @-webkit-keyframes my-animation {
-    from { -webkit-transform: translateX(100%); }
-    to { -webkit-transform: translateX(-100%); }
-  }
-  
-  @keyframes my-animation {
-    from {
-      -moz-transform: translateX(100%);
-      -webkit-transform: translateX(100%);
-      transform: translateX(100%);
-    }
-    to {
-      -moz-transform: translateX(-100%);
-      -webkit-transform: translateX(-100%);
-      transform: translateX(-100%);
-    }
-  
+
