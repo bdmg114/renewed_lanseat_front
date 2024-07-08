@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랜선석 예약</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="content">
+            <div class="title">
+                <h1>배너 멘트 업로드</h1>
+            </div>
+            <div class="form">
+                <div class="form-group">
+                    <label for="username" class="form-label">사용자 이름:</label>
+                    <input type="text" id="username" name="username" class="input" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">비밀번호:</label>
+                    <input type="password" id="password" name="password" class="input" required>
+                </div>
+                <div id="error-message" class="text-red-500 text-sm"></div>
+                <textarea id="Uid"></textarea>
+                <button onclick="submit_texts()">입력하기</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+    <script>
+        var token = localStorage.getItem('token');
+        const text_field = document.getElementById("Uid");
+
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/token/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                localStorage.setItem('token', data.access);
+                token = data.access;
+                console.log("Ddd");
+                fetch(`http://127.0.0.1:8000/new_scrolls`, {
+                    method: 'POST',  // or 'GET', 'PUT', etc. depending on your endpoint
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        value: text_field.value
+                    })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Success:', data);
+                        // Handle successful response here if needed
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Handle error condition here
+                    });
+            } catch (error) {
+                document.getElementById('error-message').textContent = 'Invalid username or password.';
+                console.error('Error:', error);
+            }
+        }
+        function submit_texts() {
+            login();
+        }
+    </script>
+</body>
+
+</html>

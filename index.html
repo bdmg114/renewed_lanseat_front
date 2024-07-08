@@ -7,6 +7,36 @@
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>랜선석 예약</title>
+    <style>
+        .banner {
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+
+        .banner > ul {
+            display: inline-block;
+            padding-left: 100%;
+            animation: scroll 20s linear infinite;
+        }
+
+        .banner > ul > li {
+            display: inline;
+            font-size: 30px;
+            color: black;
+            padding: 0 2rem;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(-100%, 0);
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -15,25 +45,20 @@
             <div class="title">
                 <h1>랜선석 예약하기</h1>
             </div>
-            <a href="google.com">
-                <div id="scroll-container">
-                    <div id="scroll-text">여기에 들어갈 문구를 신청하세요!</div>
-                </div>
-            </a>
-
+            <div class="banner">
+                <ul>
+                    <li><a href="https://forms.gle/mLD9FrFPQA4BtjY19">멘트 신청하기</a></li>
+                </ul>
+            </div>
             <div class="form">
                 <span>ID</span>
                 <input type="text" id="Uid">
-                <select name="" id="SeatSel" class="seatlist">
-
-                </select>
+                <select name="" id="SeatSel" class="seatlist"></select>
                 <button onclick="goto_reserve()">예약하러가기</button>
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
-
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
     <script>
         const Uid_field = document.getElementById("Uid");
         const Seat_select = document.getElementById("SeatSel");
@@ -51,8 +76,16 @@
                 Seat_select.selectedIndex = Number(info['SeatId']);
                 console.log(Seat_select.selectedIndex);
             }
-        }
-        );
+        });
+
+        fetch("http://127.0.0.1:8000/scroll_texts").then((response) => {
+            return response.json();
+        }).then((data) => {
+            for (text in data) {
+                console.log(data[text].value);
+                $('.banner > ul').append(`<li>${data[text].value}</li>`);
+            }
+        });
 
         function goto_reserve() {
             let Uinfo = {
