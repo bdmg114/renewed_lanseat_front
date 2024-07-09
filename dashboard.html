@@ -10,27 +10,12 @@
 </head>
 
 <body>
-    <style>
-        .seat.occupied {
-            background-color: #ff0000;
-            height: auto;
-            width: auto;
-            padding: 0px 10px;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-            outline: none;
-
-        }
-    </style>
     <div class="wrap">
         <div class="content">
             <div class="title">
                 <h1>랜선석 대시보드</h1>
             </div>
-            <div>
-                <div class="lans">
-                </div>
-            </div>
+            <div class="lans"></div>
         </div>
     </div>
 
@@ -40,51 +25,48 @@
     <script>
         const token = localStorage.getItem('token');
 
-        // Example function to handle button click
         function handleCancel(id) {
             fetch(`https://gghs2023.cafe24.com/cancel/${id}`, {
-                method: 'POST',  // or 'GET', 'PUT', etc. depending on your endpoint
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ /* your request body if required */ })
+                body: JSON.stringify({})
             })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
-                    return response.json();
+                    console.log(response.json())
                 })
                 .then(data => {
                     console.log('Success:', data);
-                    $(`.${id}`).replaceWith(`<div class="seat marked"></div>`);
-                    // Handle successful response here if needed
+                    $(`#${id}`).replaceWith(`<div class="seat marked"></div>`);
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    // Handle error condition here
                 });
         }
+
         fetch(`https://gghs2023.cafe24.com/dash`, {
-            method: 'GET', // or 'POST', 'PUT', etc.
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+                'Authorization': `Bearer ${token}`
             },
         })
-            .then((response) => {
+            .then(response => {
                 if (!response.ok) {
                     if (response.status === 401) {
-                        // Handle unauthorized access (e.g., redirect to login page)
-                        window.location.href = 'login.html';  // Replace with your login page URL
+                        window.location.href = 'login.html';
                     } else {
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
                 }
                 return response.json();
             })
-            .then((data) => {
+            .then(data => {
                 console.log(data);
                 for (let key in data) {
                     if (key === 'result') {
@@ -94,8 +76,9 @@
                     } else {
                         $('.lans').append(`<h3>${key}</h3>`);
                         $('.lans').append(`<div class="container ${key}"></div>`);
-
+                        var j = 0;
                         data[key][0].forEach((row, index) => {
+
                             $(`.${key}`).append(`<div class="row ${index.toString()}"></div>`);
                             row.forEach((seat, i) => {
                                 if (seat === '') {
@@ -103,24 +86,27 @@
                                 } else if (seat === '-') {
                                     $(`.${key} .${index.toString()}`).append(`<div class="seat marked"></div>`);
                                 } else {
-                                    const parts = data[key][1][0].toString().split(',');
-                                    console.log(i);
+                                    const parts = data[key][1][index].toString().split(',');
+                                    console.log(parts);
+                                    console.log(index);
                                     $(`.${key} .${index.toString()}`).append(`
-    <button class="seat occupied" id="${parts[i]}">${seat}</button>
-`);
-
-                                    // Add event delegation to handle button clicks
-                                    $(`.${key} .${index.toString()}`).on('click', '.seat.occupied', function () {
-                                        const id = $(this).attr('id');
-                                        handleCancel(id); // Call function to handle cancel action
-                                    });
+                                        <button class="seat occupied" id="${parts[i]}">${seat}</button>
+                                    `);
                                 }
                             });
+                            j += 1;
                         });
                     }
                 }
+                // Attach event listener to dynamically created buttons
+                $('.lans').on('click', '.seat.occupied', function () {
+                    const id = $(this).attr('id');
+                    handleCancel(id);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-
     </script>
 </body>
 

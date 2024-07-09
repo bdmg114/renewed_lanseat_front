@@ -96,3 +96,13 @@ p {
   transform: scale(1);
 }
 
+/* style.css */
+.seat.occupied {
+  background-color: #ff0000;
+  height: auto;
+  width: auto;
+  padding: 0px 10px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  outline: none;
+}
