@@ -58,7 +58,7 @@
                 })
                 .then(data => {
                     console.log('Success:', data);
-                    location.reload();
+                    $(`.${id}`).replaceWith(`<div class="seat marked"></div>`);
                     // Handle successful response here if needed
                 })
                 .catch(error => {
