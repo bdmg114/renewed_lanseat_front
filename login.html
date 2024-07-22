@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - 랜선석 예약</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <link rel="stylesheet" href="style.css"> <!-- Include your custom stylesheet if needed -->
+    <link rel="stylesheet" href="style.css">
+    <script defer src="./login.js"></script>
 </head>
 
 <body>
@@ -29,36 +30,5 @@
             </form>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
-    <script>
-        async function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const response = await fetch('https://gghs2023.cafe24.com/api/token/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                localStorage.setItem('token', data.access);
-                window.location.href = 'dashboard.html'; // Redirect to dashboard or desired page
-            } catch (error) {
-                document.getElementById('error-message').textContent = 'Invalid username or password.';
-                console.error('Error:', error);
-            }
-        }
-    </script>
 </body>
-
 </html>
