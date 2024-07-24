@@ -15,8 +15,20 @@
     font-size: 30px;
     color: black;
     padding: 0 2rem;
-}
 
+    /* 무지개 효과 */
+    background: linear-gradient(to right, #6666ff, #0077ff , #48ff00, #ff3355, #6666ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: rainbow_animation 2s ease-in infinite;
+    background-size: 400% 100%;
+}
+@keyframes rainbow_animation {
+    0%,100% { background-position: 0 0; }
+    50% { background-position: 100% 0;  }
+}
+/* 무지개 효과 끝 */
 @keyframes scroll {
     0% {
         transform: translate(0, 0);
