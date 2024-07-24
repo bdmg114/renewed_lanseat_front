@@ -1,44 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
-    <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="banner.css">
     <title>랜선석 예약</title>
-    <style>
-        .banner {
-            overflow: hidden;
-            white-space: nowrap;
-            box-sizing: border-box;
-        }
-
-        .banner > ul {
-            display: inline-block;
-            padding-left: 100%;
-            animation: scroll 20s linear infinite;
-        }
-
-        .banner > ul > li {
-            display: inline;
-            font-size: 30px;
-            color: black;
-            padding: 0 2rem;
-        }
-
-        @keyframes scroll {
-            0% {
-                transform: translate(0, 0);
-            }
-
-            100% {
-                transform: translate(-100%, 0);
-            }
-        }
-    </style>
+    <script defer src="./scripts/script.js"></script>
 </head>
-
 <body>
     <div class="wrap">
         <div class="content">
@@ -52,51 +22,11 @@
             </div>
             <div class="form">
                 <span>ID</span>
-                <input type="text" id="Uid">
+                <input type="text" id="Uid" required>
                 <select name="" id="SeatSel" class="seatlist"></select>
-                <button onclick="goto_reserve()">예약하러가기</button>
+                <button id="reserve">예약하러가기</button>
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
-    <script>
-        const Uid_field = document.getElementById("Uid");
-        const Seat_select = document.getElementById("SeatSel");
-        fetch("https://gghs2023.cafe24.com/seat_list").then((response) => {
-            return response.json();
-        }).then((data) => {
-            for (seat in data) {
-                $('.seatlist').append(`<option value="${data[seat]}">${data[seat].replace('_', ' ')}</option>`);
-            }
-        }).then(() => {
-            var info = JSON.parse(window.localStorage.getItem("UserInfo"));
-            if (info != null) {
-                console.log(info['SeatId']);
-                Uid_field.value = info['Uid'];
-                Seat_select.selectedIndex = Number(info['SeatId']);
-                console.log(Seat_select.selectedIndex);
-            }
-        });
-
-        fetch("https://gghs2023.cafe24.com/scroll_texts").then((response) => {
-            return response.json();
-        }).then((data) => {
-            for (text in data) {
-                console.log(data[text].value);
-                $('.banner > ul').append(`<li>${data[text].value}</li>`);
-            }
-        });
-
-        function goto_reserve() {
-            let Uinfo = {
-                "Uid": Uid_field.value,
-                "SeatId": Seat_select.selectedIndex
-            };
-            window.localStorage.setItem('UserInfo', JSON.stringify(Uinfo));
-            console.log(`${Seat_select.options[Seat_select.selectedIndex].text} ${Uid_field.value}`);
-            window.location.href = 'reserve.html';
-        }
-    </script>
 </body>
-
 </html>

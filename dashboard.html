@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>랜선석 예약</title>
+    <script defer src="./scripts/dashboard.js"></script>
 </head>
 
 <body>
@@ -18,96 +19,5 @@
             <div class="lans"></div>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
-
-    <script>
-        const token = localStorage.getItem('token');
-
-        function handleCancel(id) {
-            fetch(`https://gghs2023.cafe24.com/cancel/${id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({})
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    console.log(response.json())
-                })
-                .then(data => {
-                    console.log('Success:', data);
-                    $(`#${id}`).replaceWith(`<div class="seat marked"></div>`);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        fetch(`https://gghs2023.cafe24.com/dash`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 401) {
-                        window.location.href = 'login.html';
-                    } else {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                for (let key in data) {
-                    if (key === 'result') {
-                        if (!data[key]) {
-                            break;
-                        }
-                    } else {
-                        $('.lans').append(`<h3>${key}</h3>`);
-                        $('.lans').append(`<div class="container ${key}"></div>`);
-                        var j = 0;
-                        data[key][0].forEach((row, index) => {
-
-                            $(`.${key}`).append(`<div class="row ${index.toString()}"></div>`);
-                            row.forEach((seat, i) => {
-                                if (seat === '') {
-                                    $(`.${key} .${index.toString()}`).append(`<div class="seat empty"></div>`);
-                                } else if (seat === '-') {
-                                    $(`.${key} .${index.toString()}`).append(`<div class="seat marked"></div>`);
-                                } else {
-                                    const parts = data[key][1][index].toString().split(',');
-                                    console.log(parts);
-                                    console.log(index);
-                                    $(`.${key} .${index.toString()}`).append(`
-                                        <button class="seat occupied" id="${parts[i]}">${seat}</button>
-                                    `);
-                                }
-                            });
-                            j += 1;
-                        });
-                    }
-                }
-                // Attach event listener to dynamically created buttons
-                $('.lans').on('click', '.seat.occupied', function () {
-                    const id = $(this).attr('id');
-                    handleCancel(id);
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    </script>
 </body>
-
 </html>

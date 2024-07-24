@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>랜선석 예약</title>
+    <script defer src="./scripts/upload_banner.js"></script>
 </head>
-
 <body>
     <div class="wrap">
         <div class="content">
@@ -26,70 +26,9 @@
                 </div>
                 <div id="error-message" class="text-red-500 text-sm"></div>
                 <textarea id="Uid"></textarea>
-                <button onclick="submit_texts()">입력하기</button>
+                <button id="submit">입력하기</button>
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
-    <script>
-        var token = localStorage.getItem('token');
-        const text_field = document.getElementById("Uid");
-
-        async function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const response = await fetch('https://gghs2023.cafe24.com/api/token/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                localStorage.setItem('token', data.access);
-                token = data.access;
-                console.log("Ddd");
-                fetch(`https://gghs2023.cafe24.com/new_scrolls`, {
-                    method: 'POST',  // or 'GET', 'PUT', etc. depending on your endpoint
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        value: text_field.value
-                    })
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('Success:', data);
-                        // Handle successful response here if needed
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        // Handle error condition here
-                    });
-            } catch (error) {
-                document.getElementById('error-message').textContent = 'Invalid username or password.';
-                console.error('Error:', error);
-            }
-        }
-        function submit_texts() {
-            login();
-        }
-    </script>
 </body>
-
 </html>
