@@ -55,3 +55,4 @@ async function fetchScrollTextsAndPopulate() {
 
 renderSeats();
 fetchScrollTextsAndPopulate();
+document.querySelector("#reserve").addEventListener('click', goto_reserve);

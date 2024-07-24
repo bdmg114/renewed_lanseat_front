@@ -40,11 +40,12 @@ async function renderSeats() {
     }
 }
 
+let selected;
+
 // 좌석 선택 처리
 function selectSeat() {
     const container = document.querySelector('.container');
 
-    let selected;
     container.addEventListener('click', e => {
         if (e.target.classList.contains('seat') &&
             !e.target.classList.contains('occupied') &&
@@ -136,3 +137,4 @@ async function submit() {
 
 selectSeat();
 renderSeats();
+document.querySelector(".reserve_button").addEventListener("click", submit);

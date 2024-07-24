@@ -23,3 +23,5 @@ async function login() {
         console.error('Error:', error);
     }
 }
+
+document.querySelector("#login").addEventListener('click', login);
