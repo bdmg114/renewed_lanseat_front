@@ -43,6 +43,7 @@
                 .then(data => {
                     console.log('Success:', data);
                     $(`#${id}`).replaceWith(`<div class="seat marked"></div>`);
+                    location.reload();
                 })
                 .catch(error => {
                     console.error('Error:', error);
